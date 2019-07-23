@@ -218,7 +218,7 @@ def select_clause(file, process_metadata, batch, batches, table_columns_reinyect
                     if row['value_custom_flg'] == 'N':
                         file.writelines(''.join(['case when', ' ', 't', str(row['seq']), '.', row['value'], ' ',
                                                  '= "', str(row['default']), '" then "', str(row['error_code'])]))
-                        
+
                     elif row['value_custom_flg'] == 'Y':
                         if pd.isna(dim_columns.loc[index]['default']):
                             file.writelines(
@@ -242,7 +242,7 @@ def select_clause(file, process_metadata, batch, batches, table_columns_reinyect
     return 0
 
 
-def from_clause(file, process_metadata, process_table_name, process_table, batches, build_part):
+def from_clause(file, process_metadata, process_table_name, process_table, batch, build_part):
     if build_part == 1:
         dim_tables = process_metadata[['seq', 'dimension', 'how', 'criteria', 'type']].reset_index(drop=True)
         table_name = dim_tables[['seq', 'dimension']].drop_duplicates().groupby('seq')['dimension'].apply(list)
@@ -321,7 +321,7 @@ def from_clause(file, process_metadata, process_table_name, process_table, batch
                                 file.writelines(
                                     ''.join(['\n', table_how[seq][0], ' join ', table[0], ' ', 't', str(seq)]))
                                 # Is Equi Join
-                                if table_fks_custom_flg[seq][k] == 'N':
+                                if table_fks_custom_flg[seq][k] == 'Y':
                                     # Is Not Custom Key
                                     if table_key_custom_flg[seq][k] == 'N':
                                         file.writelines(
@@ -365,7 +365,7 @@ def from_clause(file, process_metadata, process_table_name, process_table, batch
                      't', str(seq), '.', table_keys[seq][0], ' ', table_criteria.loc[seq][0]]))
     if build_part == 2:
         file.writelines(''.join(['\n']))
-        file.writelines(''.join(['from ', process_table, '_temp', str(batches[len(batches) - 2]), ' t0']))
+        file.writelines(''.join(['from ', process_table, '_temp', str(int(batch) - 1), ' t0']))
     return 0
 
 

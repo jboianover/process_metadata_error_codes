@@ -94,7 +94,7 @@ for batch in batches:
         if first_batch_flg == 'Y':
             process_table_name = process_table
         first_batch_flg = 'N'
-        from_clause(file, process_metadata, process_table_name, process_table, batches, build_part)
+        from_clause(file, process_metadata, process_table_name, process_table, batch, build_part)
         process_table_name = ''.join([process_table, '_temp', str(batch)])
 
         # WHERE
